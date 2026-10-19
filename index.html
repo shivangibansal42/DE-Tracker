@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shivangi's Digital Engineering Tracker</title>
+    <title>Shivangi's Digital Engineering Tracker & Planner</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
+        .dragging { opacity: 0.4; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-p-4 md:p-8">
+<body class="bg-slate-50 text-slate-800 p-4 md:p-8">
 
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-7xl mx-auto">
         <!-- Header -->
         <header class="bg-white shadow-sm rounded-2xl p-6 mb-8 border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
@@ -20,11 +21,11 @@
                 <p class="text-slate-500 text-sm mt-1">M.Sc. Digital Engineering • Bauhaus-Universität Weimar (120 ECTS Total)</p>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="resetProgress()" class="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition">Reset Progress</button>
+                <button onclick="resetProgress()" class="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition">Reset All</button>
             </div>
         </header>
 
-        <!-- Summary / Progress Grid -->
+        <!-- Summary Counters -->
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 col-span-2 md:col-span-4 lg:col-span-1 flex flex-col justify-between">
                 <div>
@@ -35,244 +36,247 @@
                     <div id="total-bar" class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
             </div>
-
-            <!-- Category Cards -->
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
                 <span class="text-xs font-medium text-slate-500 block">Fundamentals</span>
-                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-fund-earned">0</span> / 18 ECTS</div>
-                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
-                    <div id="bar-fund" class="bg-blue-500 h-1.5 rounded-full transition-all" style="width: 0%"></div>
-                </div>
+                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-fund-earned">0</span> / 18</div>
             </div>
-
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
                 <span class="text-xs font-medium text-slate-500 block">Engineering M.</span>
-                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-eng-earned">0</span> / 36 ECTS</div>
-                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
-                    <div id="bar-eng" class="bg-emerald-500 h-1.5 rounded-full transition-all" style="width: 0%"></div>
-                </div>
+                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-eng-earned">0</span> / 36</div>
             </div>
-
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
                 <span class="text-xs font-medium text-slate-500 block">CS Methods</span>
-                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-csm-earned">0</span> / 18 ECTS</div>
-                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
-                    <div id="bar-csm" class="bg-amber-500 h-1.5 rounded-full transition-all" style="width: 0%"></div>
-                </div>
+                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-csm-earned">0</span> / 18</div>
             </div>
-
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
                 <span class="text-xs font-medium text-slate-500 block">Electives</span>
-                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-elec-earned">0</span> / 12 ECTS</div>
-                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
-                    <div id="bar-elec" class="bg-purple-500 h-1.5 rounded-full transition-all" style="width: 0%"></div>
-                </div>
+                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-elec-earned">0</span> / 12</div>
             </div>
-
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
                 <span class="text-xs font-medium text-slate-500 block">Project</span>
-                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-proj-earned">0</span> / 12 ECTS</div>
-                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
-                    <div id="bar-proj" class="bg-cyan-500 h-1.5 rounded-full transition-all" style="width: 0%"></div>
-                </div>
+                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-proj-earned">0</span> / 12</div>
             </div>
-
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
                 <span class="text-xs font-medium text-slate-500 block">Master Module</span>
-                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-master-earned">0</span> / 24 ECTS</div>
-                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
-                    <div id="bar-master" class="bg-rose-500 h-1.5 rounded-full transition-all" style="width: 0%"></div>
-                </div>
+                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-master-earned">0</span> / 24</div>
             </div>
         </div>
 
-        <!-- Modules Container -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" id="modules-container">
-            <!-- Dynamically populated via JS -->
+        <!-- Main Layout: Module Pool & Semester Timetable Dropzones -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left 1 Column: Unassigned Modules Catalog Pool -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[700px]">
+                <h2 class="font-bold text-slate-900 text-base mb-2">Module Catalog Pool</h2>
+                <p class="text-xs text-slate-400 mb-4">Drag modules into your target semester slot on the right.</p>
+                <div id="module-pool" class="flex-1 overflow-y-auto space-y-2 pr-1 border-2 border-dashed border-slate-100 p-2 rounded-xl" ondragover="allowDrop(event)" ondrdrop="dropToPool(event)">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Right 2 Columns: Semester Timetable Planner -->
+            <div class="lg:col-span-2 space-y-6">
+                <h2 class="font-bold text-slate-900 text-lg">Semester Timetable Planner</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Semester 1 -->
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[330px]">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-slate-800 text-sm">Semester 1 (WS)</h3>
+                            <span id="sem-1-ects" class="text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-full">0 ECTS</span>
+                        </div>
+                        <div id="drop-sem-1" class="flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 1)">
+                        </div>
+                    </div>
+
+                    <!-- Semester 2 -->
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[330px]">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-slate-800 text-sm">Semester 2 (SS)</h3>
+                            <span id="sem-2-ects" class="text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-full">0 ECTS</span>
+                        </div>
+                        <div id="drop-sem-2" class="flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 2)">
+                        </div>
+                    </div>
+
+                    <!-- Semester 3 -->
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[330px]">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-slate-800 text-sm">Semester 3 (WS)</h3>
+                            <span id="sem-3-ects" class="text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-full">0 ECTS</span>
+                        </div>
+                        <div id="drop-sem-3" class="flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 3)">
+                        </div>
+                    </div>
+
+                    <!-- Semester 4 -->
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[330px]">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-slate-800 text-sm">Semester 4 (SS)</h3>
+                            <span id="sem-4-ects" class="text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-full">0 ECTS</span>
+                        </div>
+                        <div id="drop-sem-4" class="flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 4)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <script>
-        const curriculum = [
-            {
-                id: "fundamentals",
-                title: "II. Fundamentals (Choose 18 ECTS required)",
-                target: 18,
-                modules: [
-                    { id: "f1", name: "Algorithms and Data Structures", ects: 6, sem: "SS" },
-                    { id: "f2", name: "Applied Mathematics and Stochastics", ects: 6, sem: "WS" },
-                    { id: "f3", name: "Introduction to Mechanics", ects: 6, sem: "WS" },
-                    { id: "f4", name: "Mathematics for Data Science", ects: 6, sem: "WS" },
-                    { id: "f5", name: "Object-oriented Modeling and Programming in Engineering", ects: 6, sem: "WS" },
-                    { id: "f6", name: "Software Engineering", ects: 6, sem: "SS" },
-                    { id: "f7", name: "Statistics", ects: 6, sem: "SS" }
-                ]
-            },
-            {
-                id: "engineering",
-                title: "III. Engineering Methods (Choose 36 ECTS required)",
-                target: 36,
-                modules: [
-                    { id: "em1", name: "Advanced Building Information Modeling", ects: 6, sem: "SS" },
-                    { id: "em2", name: "Complex Dynamics", ects: 6, sem: "SS" },
-                    { id: "em3", name: "Computer models for physical processes - from observation to simulation", ects: 6, sem: "WS" },
-                    { id: "em4", name: "Design and Interpretation of Experiments", ects: 6, sem: "WS" },
-                    { id: "em5", name: "Experimental Structural Dynamics", ects: 6, sem: "SS" },
-                    { id: "em6", name: "Finite Element Methods", ects: 6, sem: "WS" },
-                    { id: "em7", name: "Indoor Environmental Modeling", ects: 6, sem: "SS" },
-                    { id: "em8", name: "Introduction to Mobility and Transport", ects: 6, sem: "WS" },
-                    { id: "em9", name: "Macroscopic Transport Modeling", ects: 6, sem: "SS" },
-                    { id: "em10", name: "Mechanics of Engineering Materials", ects: 6, sem: "WS" },
-                    { id: "em11", name: "Microscopic Traffic Simulation", ects: 6, sem: "SS" },
-                    { id: "em12", name: "Modelling of Steel Structures and Numerical Simulation", ects: 6, sem: "SS" },
-                    { id: "em13", name: "Optimization", ects: 6, sem: "SS" },
-                    { id: "em14", name: "Simulation Methods in Engineering", ects: 6, sem: "SS" },
-                    { id: "em15", name: "Spatial Information Systems (GIS)", ects: 6, sem: "WS" },
-                    { id: "em16", name: "Stochastic Simulation Techniques and Structural Reliability", ects: 6, sem: "SS" },
-                    { id: "em17", name: "Structural Dynamics", ects: 6, sem: "WS" }
-                ]
-            },
-            {
-                id: "csm",
-                title: "IV. Computer Science Methods (Choose 18 ECTS required)",
-                target: 18,
-                modules: [
-                    { id: "csm1", name: "Computer Graphics: Fundamentals of Imaging", ects: 6, sem: "SS" },
-                    { id: "csm2", name: "Formal Methods for Software Engineering", ects: 6, sem: "WS" },
-                    { id: "csm3", name: "Generative Software Engineering", ects: 6, sem: "SS" },
-                    { id: "csm4", name: "Image Analysis and Object Recognition", ects: 6, sem: "SS" },
-                    { id: "csm5", name: "Introduction to Machine Learning and Data Mining", ects: 6, sem: "WS" },
-                    { id: "csm6", name: "Photogrammetric Computer Vision", ects: 6, sem: "WS" },
-                    { id: "csm7", name: "Search Algorithms", ects: 6, sem: "WS" },
-                    { id: "csm8", name: "Visualization", ects: 6, sem: "SS" }
-                ]
-            },
-            {
-                id: "electives",
-                title: "Elective Modules (12 ECTS required)",
-                target: 12,
-                modules: [
-                    { id: "el1", name: "Elective Module / Language Course 1", ects: 6, sem: "Any" },
-                    { id: "el2", name: "Elective Module / Language Course 2", ects: 6, sem: "Any" }
-                ]
-            },
-            {
-                id: "project",
-                title: "V. Project (12 ECTS required)",
-                target: 12,
-                modules: [
-                    { id: "proj1", name: "Master Project (Scientific Group Project)", ects: 12, sem: "Any" }
-                ]
-            },
-            {
-                id: "master",
-                title: "VI. Master's Module (24 ECTS required)",
-                target: 24,
-                modules: [
-                    { id: "m_prep", name: "Preparatory Research Phase", ects: 3, sem: "Any" },
-                    { id: "m_thesis", name: "Master's Thesis and Defense", ects: 21, sem: "Any" }
-                ]
-            }
+        const allModules = [
+            // Fundamentals
+            { id: "f1", name: "Algorithms and Data Structures", ects: 6, cat: "fundamentals" },
+            { id: "f2", name: "Applied Mathematics and Stochastics", ects: 6, cat: "fundamentals" },
+            { id: "f3", name: "Introduction to Mechanics", ects: 6, cat: "fundamentals" },
+            { id: "f4", name: "Mathematics for Data Science", ects: 6, cat: "fundamentals" },
+            { id: "f5", name: "Object-oriented Modeling & Programming", ects: 6, cat: "fundamentals" },
+            { id: "f6", name: "Software Engineering", ects: 6, cat: "fundamentals" },
+            { id: "f7", name: "Statistics", ects: 6, cat: "fundamentals" },
+            // Engineering Methods
+            { id: "em1", name: "Advanced Building Information Modeling", ects: 6, cat: "engineering" },
+            { id: "em2", name: "Complex Dynamics", ects: 6, cat: "engineering" },
+            { id: "em3", name: "Computer models for physical processes", ects: 6, cat: "engineering" },
+            { id: "em4", name: "Design and Interpretation of Experiments", ects: 6, cat: "engineering" },
+            { id: "em5", name: "Experimental Structural Dynamics", ects: 6, cat: "engineering" },
+            { id: "em6", name: "Finite Element Methods", ects: 6, cat: "engineering" },
+            { id: "em7", name: "Indoor Environmental Modeling", ects: 6, cat: "engineering" },
+            { id: "em8", name: "Introduction to Mobility and Transport", ects: 6, cat: "engineering" },
+            { id: "em9", name: "Macroscopic Transport Modeling", ects: 6, cat: "engineering" },
+            { id: "em10", name: "Mechanics of Engineering Materials", ects: 6, cat: "engineering" },
+            { id: "em11", name: "Microscopic Traffic Simulation", ects: 6, cat: "engineering" },
+            { id: "em12", name: "Modelling of Steel Structures", ects: 6, cat: "engineering" },
+            { id: "em13", name: "Optimization", ects: 6, cat: "engineering" },
+            { id: "em14", name: "Simulation Methods in Engineering", ects: 6, cat: "engineering" },
+            { id: "em15", name: "Spatial Information Systems (GIS)", ects: 6, cat: "engineering" },
+            { id: "em16", name: "Stochastic Simulation & Reliability", ects: 6, cat: "engineering" },
+            { id: "em17", name: "Structural Dynamics", ects: 6, cat: "engineering" },
+            // Computer Science Methods
+            { id: "csm1", name: "Computer Graphics: Fundamentals of Imaging", ects: 6, cat: "csm" },
+            { id: "csm2", name: "Formal Methods for Software Engineering", ects: 6, cat: "csm" },
+            { id: "csm3", name: "Generative Software Engineering", ects: 6, cat: "csm" },
+            { id: "csm4", name: "Image Analysis and Object Recognition", ects: 6, cat: "csm" },
+            { id: "csm5", name: "Intro to Machine Learning & Data Mining", ects: 6, cat: "csm" },
+            { id: "csm6", name: "Photogrammetric Computer Vision", ects: 6, cat: "csm" },
+            { id: "csm7", name: "Search Algorithms", ects: 6, cat: "csm" },
+            { id: "csm8", name: "Visualization", ects: 6, cat: "csm" },
+            // Electives
+            { id: "el1", name: "Elective Module / Language Course 1", ects: 6, cat: "electives" },
+            { id: "el2", name: "Elective Module / Language Course 2", ects: 6, cat: "electives" },
+            // Project
+            { id: "proj1", name: "Master Project (Scientific Group Project)", ects: 12, cat: "project" },
+            // Master Module
+            { id: "m_prep", name: "Preparatory Research Phase", ects: 3, cat: "master" },
+            { id: "m_thesis", name: "Master's Thesis and Defense", ects: 21, cat: "master" }
         ];
 
         function loadState() {
-            const saved = localStorage.getItem('shivangi_de_tracker');
+            const saved = localStorage.getItem('shivangi_drag_tracker');
+            // State maps moduleId -> semester number (null/undefined if in pool)
             return saved ? JSON.parse(saved) : {};
         }
 
         function saveState(state) {
-            localStorage.setItem('shivangi_de_tracker', JSON.stringify(state));
+            localStorage.setItem('shivangi_drag_tracker', JSON.stringify(state));
         }
 
-        function renderTracker() {
+        function render() {
             const state = loadState();
-            const container = document.getElementById('modules-container');
-            container.innerHTML = '';
+            
+            // Clear containers
+            document.getElementById('module-pool').innerHTML = '';
+            for(let i=1; i<=4; i++) {
+                document.getElementById(`drop-sem-${i}`).innerHTML = '';
+            }
 
-            let totals = {
-                fundamentals: 0,
-                engineering: 0,
-                csm: 0,
-                electives: 0,
-                project: 0,
-                master: 0,
-                overall: 0
-            };
+            let totals = { fundamentals: 0, engineering: 0, csm: 0, electives: 0, project: 0, master: 0, overall: 0 };
+            let semEcts = { 1: 0, 2: 0, 3: 0, 4: 0 };
 
-            curriculum.forEach(section => {
-                let sectionEarned = 0;
-                let sectionTotalTarget = section.target;
+            allModules.forEach(mod => {
+                const assignedSem = state[mod.id];
+                
+                // Calculate totals if assigned to a semester
+                if(assignedSem) {
+                    totals[mod.cat] += mod.ects;
+                    totals.overall += mod.ects;
+                    semEcts[assignedSem] += mod.ects;
+                }
 
-                let listHtml = section.modules.map(mod => {
-                    const isChecked = state[mod.id] || false;
-                    if (isChecked) {
-                        sectionEarned += mod.ects;
-                        totals[section.id] += mod.ects;
-                        totals.overall += mod.ects;
-                    }
+                // Create Draggable Element HTML
+                const card = document.createElement('div');
+                card.className = "bg-white p-3 rounded-xl border border-slate-200 shadow-xs cursor-grab flex items-center justify-between text-xs font-medium text-slate-700 hover:border-indigo-300 transition";
+                card.draggable = true;
+                card.id = mod.id;
+                card.ondragstart = (e) => {
+                    e.dataTransfer.setData('text/plain', mod.id);
+                    setTimeout(() => card.classList.add('dragging'), 0);
+                };
+                card.ondragend = () => card.classList.remove('dragging');
 
-                    return `
-                        <label class="flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition">
-                            <div class="flex items-center gap-3">
-                                <input type="checkbox" data-id="${mod.id}" ${isChecked ? 'checked' : ''} onchange="toggleModule('${mod.id}')" class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
-                                <span class="text-sm font-medium text-slate-700 ${isChecked ? 'line-through text-slate-400' : ''}">${mod.name}</span>
-                            </div>
-                            <span class="text-xs font-semibold px-2 py-1 bg-slate-100 text-slate-600 rounded-md">${mod.ects} ECTS</span>
-                        </label>
-                    `;
-                }).join('');
-
-                const cardHtml = `
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
-                        <div>
-                            <div class="flex justify-between items-center mb-4">
-                                <h2 class="font-bold text-slate-900 text-base">${section.title}</h2>
-                                <span class="text-xs font-bold px-2.5 py-1 rounded-full ${sectionEarned >= sectionTotalTarget ? 'bg-emerald-50 text-emerald-600' : 'bg-indigo-50 text-indigo-600'}">
-                                    ${sectionEarned} / ${sectionTotalTarget} ECTS
-                                </span>
-                            </div>
-                            <div class="space-y-2">
-                                ${listHtml}
-                            </div>
-                        </div>
-                    </div>
+                card.innerHTML = `
+                    <span class="truncate pr-2">${mod.name}</span>
+                    <span class="shrink-0 px-2 py-0.5 bg-slate-100 text-slate-600 rounded font-semibold">${mod.ects} ECTS</span>
                 `;
-                container.innerHTML += cardHtml;
+
+                if(assignedSem) {
+                    document.getElementById(`drop-sem-${assignedSem}`).appendChild(card);
+                } else {
+                    document.getElementById('module-pool').appendChild(card);
+                }
             });
 
-            // Update summary counters & bars
+            // Update Summary Counters & Badges
             document.getElementById('total-ects').innerText = totals.overall;
             document.getElementById('total-bar').style.width = Math.min((totals.overall / 120) * 100, 100) + '%';
 
-            updateCategoryCard('fund', totals.fundamentals, 18);
-            updateCategoryCard('eng', totals.engineering, 36);
-            updateCategoryCard('csm', totals.csm, 18);
-            updateCategoryCard('elec', totals.electives, 12);
-            updateCategoryCard('proj', totals.project, 12);
-            updateCategoryCard('master', totals.master, 24);
-        }
+            document.getElementById('cat-fund-earned').innerText = totals.fundamentals;
+            document.getElementById('cat-eng-earned').innerText = totals.engineering;
+            document.getElementById('cat-csm-earned').innerText = totals.csm;
+            document.getElementById('cat-elec-earned').innerText = totals.electives;
+            document.getElementById('cat-proj-earned').innerText = totals.project;
+            document.getElementById('cat-master-earned').innerText = totals.master;
 
-        function updateCategoryCard(key, earned, target) {
-            document.getElementById(`cat-${key}-earned`).innerText = earned;
-            document.getElementById(`bar-${key}`).style.width = Math.min((earned / target) * 100, 100) + '%';
-        }
-
-        function toggleModule(id) {
-            const state = loadState();
-            state[id] = !state[id];
-            saveState(state);
-            renderTracker();
-        }
-
-        function resetProgress() {
-            if (confirm("Are you sure you want to reset all your progress?")) {
-                localStorage.removeItem('shivangi_de_tracker');
-                renderTracker();
+            for(let i=1; i<=4; i++) {
+                document.getElementById(`sem-${i}-ects`).innerText = `${semEcts[i]} ECTS`;
             }
         }
 
-        // Initial render on load
-        renderTracker();
+        function allowDrop(e) {
+            e.preventDefault();
+        }
+
+        function dropToSemester(e, semNumber) {
+            e.preventDefault();
+            const modId = e.dataTransfer.getData('text/plain');
+            if(!modId) return;
+
+            const state = loadState();
+            state[modId] = semNumber;
+            saveState(state);
+            render();
+        }
+
+        function dropToPool(e) {
+            e.preventDefault();
+            const modId = e.dataTransfer.getData('text/plain');
+            if(!modId) return;
+
+            const state = loadState();
+            delete state[modId];
+            saveState(state);
+            render();
+        }
+
+        function resetProgress() {
+            if(confirm("Reset all semester placements?")) {
+                localStorage.removeItem('shivangi_drag_tracker');
+                render();
+            }
+        }
+
+        // Initialize render
+        render();
     </script>
 </body>
 </html>
