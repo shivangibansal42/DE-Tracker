@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shivangi's Digital Engineering Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="bg-white shadow-sm rounded-2xl p-6 mb-8 border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-900">Shivangi's Digital Engineering Tracker</h1>
+                <p class="text-slate-500 text-sm mt-1">M.Sc. Digital Engineering • Bauhaus-Universität Weimar (120 ECTS Total)</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="resetProgress()" class="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition">Reset Progress</button>
+            </div>
+        </header>
+
+        <!-- Summary / Progress Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 col-span-2 md:col-span-4 lg:col-span-1 flex flex-col justify-between">
+                <div>
+                    <span class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Total Progress</span>
+                    <div class="text-2xl font-bold text-indigo-600 mt-1"><span id="total-ects">0</span> / 120 ECTS</div>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2 mt-3 overflow-hidden">
+                    <div id="total-bar" class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Category Cards -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                <span class="text-xs font-medium text-slate-500 block">Fundamentals</span>
+                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-fund-earned">0</span> / 18 ECTS</div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
+                    <div id="bar-fund" class="bg-blue-500 h-1.5 rounded-full transition-all" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                <span class="text-xs font-medium text-slate-500 block">Engineering M.</span>
+                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-eng-earned">0</span> / 36 ECTS</div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
+                    <div id="bar-eng" class="bg-emerald-500 h-1.5 rounded-full transition-all" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                <span class="text-xs font-medium text-slate-500 block">CS Methods</span>
+                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-csm-earned">0</span> / 18 ECTS</div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
+                    <div id="bar-csm" class="bg-amber-500 h-1.5 rounded-full transition-all" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                <span class="text-xs font-medium text-slate-500 block">Electives</span>
+                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-elec-earned">0</span> / 12 ECTS</div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
+                    <div id="bar-elec" class="bg-purple-500 h-1.5 rounded-full transition-all" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                <span class="text-xs font-medium text-slate-500 block">Project</span>
+                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-proj-earned">0</span> / 12 ECTS</div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
+                    <div id="bar-proj" class="bg-cyan-500 h-1.5 rounded-full transition-all" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                <span class="text-xs font-medium text-slate-500 block">Master Module</span>
+                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-master-earned">0</span> / 24 ECTS</div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
+                    <div id="bar-master" class="bg-rose-500 h-1.5 rounded-full transition-all" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modules Container -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" id="modules-container">
+            <!-- Dynamically populated via JS -->
+        </div>
+    </div>
+
+    <script>
+        const curriculum = [
+            {
+                id: "fundamentals",
+                title: "II. Fundamentals (Choose 18 ECTS required)",
+                target: 18,
+                modules: [
+                    { id: "f1", name: "Algorithms and Data Structures", ects: 6, sem: "SS" },
+                    { id: "f2", name: "Applied Mathematics and Stochastics", ects: 6, sem: "WS" },
+                    { id: "f3", name: "Introduction to Mechanics", ects: 6, sem: "WS" },
+                    { id: "f4", name: "Mathematics for Data Science", ects: 6, sem: "WS" },
+                    { id: "f5", name: "Object-oriented Modeling and Programming in Engineering", ects: 6, sem: "WS" },
+                    { id: "f6", name: "Software Engineering", ects: 6, sem: "SS" },
+                    { id: "f7", name: "Statistics", ects: 6, sem: "SS" }
+                ]
+            },
+            {
+                id: "engineering",
+                title: "III. Engineering Methods (Choose 36 ECTS required)",
+                target: 36,
+                modules: [
+                    { id: "em1", name: "Advanced Building Information Modeling", ects: 6, sem: "SS" },
+                    { id: "em2", name: "Complex Dynamics", ects: 6, sem: "SS" },
+                    { id: "em3", name: "Computer models for physical processes - from observation to simulation", ects: 6, sem: "WS" },
+                    { id: "em4", name: "Design and Interpretation of Experiments", ects: 6, sem: "WS" },
+                    { id: "em5", name: "Experimental Structural Dynamics", ects: 6, sem: "SS" },
+                    { id: "em6", name: "Finite Element Methods", ects: 6, sem: "WS" },
+                    { id: "em7", name: "Indoor Environmental Modeling", ects: 6, sem: "SS" },
+                    { id: "em8", name: "Introduction to Mobility and Transport", ects: 6, sem: "WS" },
+                    { id: "em9", name: "Macroscopic Transport Modeling", ects: 6, sem: "SS" },
+                    { id: "em10", name: "Mechanics of Engineering Materials", ects: 6, sem: "WS" },
+                    { id: "em11", name: "Microscopic Traffic Simulation", ects: 6, sem: "SS" },
+                    { id: "em12", name: "Modelling of Steel Structures and Numerical Simulation", ects: 6, sem: "SS" },
+                    { id: "em13", name: "Optimization", ects: 6, sem: "SS" },
+                    { id: "em14", name: "Simulation Methods in Engineering", ects: 6, sem: "SS" },
+                    { id: "em15", name: "Spatial Information Systems (GIS)", ects: 6, sem: "WS" },
+                    { id: "em16", name: "Stochastic Simulation Techniques and Structural Reliability", ects: 6, sem: "SS" },
+                    { id: "em17", name: "Structural Dynamics", ects: 6, sem: "WS" }
+                ]
+            },
+            {
+                id: "csm",
+                title: "IV. Computer Science Methods (Choose 18 ECTS required)",
+                target: 18,
+                modules: [
+                    { id: "csm1", name: "Computer Graphics: Fundamentals of Imaging", ects: 6, sem: "SS" },
+                    { id: "csm2", name: "Formal Methods for Software Engineering", ects: 6, sem: "WS" },
+                    { id: "csm3", name: "Generative Software Engineering", ects: 6, sem: "SS" },
+                    { id: "csm4", name: "Image Analysis and Object Recognition", ects: 6, sem: "SS" },
+                    { id: "csm5", name: "Introduction to Machine Learning and Data Mining", ects: 6, sem: "WS" },
+                    { id: "csm6", name: "Photogrammetric Computer Vision", ects: 6, sem: "WS" },
+                    { id: "csm7", name: "Search Algorithms", ects: 6, sem: "WS" },
+                    { id: "csm8", name: "Visualization", ects: 6, sem: "SS" }
+                ]
+            },
+            {
+                id: "electives",
+                title: "Elective Modules (12 ECTS required)",
+                target: 12,
+                modules: [
+                    { id: "el1", name: "Elective Module / Language Course 1", ects: 6, sem: "Any" },
+                    { id: "el2", name: "Elective Module / Language Course 2", ects: 6, sem: "Any" }
+                ]
+            },
+            {
+                id: "project",
+                title: "V. Project (12 ECTS required)",
+                target: 12,
+                modules: [
+                    { id: "proj1", name: "Master Project (Scientific Group Project)", ects: 12, sem: "Any" }
+                ]
+            },
+            {
+                id: "master",
+                title: "VI. Master's Module (24 ECTS required)",
+                target: 24,
+                modules: [
+                    { id: "m_prep", name: "Preparatory Research Phase", ects: 3, sem: "Any" },
+                    { id: "m_thesis", name: "Master's Thesis and Defense", ects: 21, sem: "Any" }
+                ]
+            }
+        ];
+
+        function loadState() {
+            const saved = localStorage.getItem('shivangi_de_tracker');
+            return saved ? JSON.parse(saved) : {};
+        }
+
+        function saveState(state) {
+            localStorage.setItem('shivangi_de_tracker', JSON.stringify(state));
+        }
+
+        function renderTracker() {
+            const state = loadState();
+            const container = document.getElementById('modules-container');
+            container.innerHTML = '';
+
+            let totals = {
+                fundamentals: 0,
+                engineering: 0,
+                csm: 0,
+                electives: 0,
+                project: 0,
+                master: 0,
+                overall: 0
+            };
+
+            curriculum.forEach(section => {
+                let sectionEarned = 0;
+                let sectionTotalTarget = section.target;
+
+                let listHtml = section.modules.map(mod => {
+                    const isChecked = state[mod.id] || false;
+                    if (isChecked) {
+                        sectionEarned += mod.ects;
+                        totals[section.id] += mod.ects;
+                        totals.overall += mod.ects;
+                    }
+
+                    return `
+                        <label class="flex items-center justify-between p-3 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" data-id="${mod.id}" ${isChecked ? 'checked' : ''} onchange="toggleModule('${mod.id}')" class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+                                <span class="text-sm font-medium text-slate-700 ${isChecked ? 'line-through text-slate-400' : ''}">${mod.name}</span>
+                            </div>
+                            <span class="text-xs font-semibold px-2 py-1 bg-slate-100 text-slate-600 rounded-md">${mod.ects} ECTS</span>
+                        </label>
+                    `;
+                }).join('');
+
+                const cardHtml = `
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="font-bold text-slate-900 text-base">${section.title}</h2>
+                                <span class="text-xs font-bold px-2.5 py-1 rounded-full ${sectionEarned >= sectionTotalTarget ? 'bg-emerald-50 text-emerald-600' : 'bg-indigo-50 text-indigo-600'}">
+                                    ${sectionEarned} / ${sectionTotalTarget} ECTS
+                                </span>
+                            </div>
+                            <div class="space-y-2">
+                                ${listHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHtml;
+            });
+
+            // Update summary counters & bars
+            document.getElementById('total-ects').innerText = totals.overall;
+            document.getElementById('total-bar').style.width = Math.min((totals.overall / 120) * 100, 100) + '%';
+
+            updateCategoryCard('fund', totals.fundamentals, 18);
+            updateCategoryCard('eng', totals.engineering, 36);
+            updateCategoryCard('csm', totals.csm, 18);
+            updateCategoryCard('elec', totals.electives, 12);
+            updateCategoryCard('proj', totals.project, 12);
+            updateCategoryCard('master', totals.master, 24);
+        }
+
+        function updateCategoryCard(key, earned, target) {
+            document.getElementById(`cat-${key}-earned`).innerText = earned;
+            document.getElementById(`bar-${key}`).style.width = Math.min((earned / target) * 100, 100) + '%';
+        }
+
+        function toggleModule(id) {
+            const state = loadState();
+            state[id] = !state[id];
+            saveState(state);
+            renderTracker();
+        }
+
+        function resetProgress() {
+            if (confirm("Are you sure you want to reset all your progress?")) {
+                localStorage.removeItem('shivangi_de_tracker');
+                renderTracker();
+            }
+        }
+
+        // Initial render on load
+        renderTracker();
+    </script>
+</body>
+</html>
