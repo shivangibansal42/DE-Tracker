@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shivangi's Digital Engineering Tracker & Planner</title>
+    <title>Shivangi's Digital Engineering Tracker & Timetable</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -13,20 +13,20 @@
 </head>
 <body class="bg-slate-50 text-slate-800 p-4 md:p-8">
 
-    <div class="max-w-7xl mx-auto">
+    <div class="max-w-7xl mx-auto space-y-8">
         <!-- Header -->
-        <header class="bg-white shadow-sm rounded-2xl p-6 mb-8 border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <header class="bg-white shadow-sm rounded-2xl p-6 border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h1 class="text-2xl md:text-3xl font-bold text-slate-900">Shivangi's Digital Engineering Tracker</h1>
                 <p class="text-slate-500 text-sm mt-1">M.Sc. Digital Engineering • Bauhaus-Universität Weimar (120 ECTS Total)</p>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="resetProgress()" class="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition">Reset All</button>
+                <button onclick="resetProgress()" class="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition cursor-pointer">Reset All</button>
             </div>
         </header>
 
         <!-- Summary Counters -->
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 col-span-2 md:col-span-4 lg:col-span-1 flex flex-col justify-between">
                 <div>
                     <span class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Total Progress</span>
@@ -62,123 +62,149 @@
             </div>
         </div>
 
-        <!-- Main Layout: Module Pool & Semester Timetable Dropzones -->
+        <!-- Main Layout: Module Pool & Semester Timetable Planner -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <!-- Left 1 Column: Unassigned Modules Catalog Pool -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[700px]">
-                <h2 class="font-bold text-slate-900 text-base mb-2">Module Catalog Pool</h2>
-                <p class="text-xs text-slate-400 mb-4">Drag modules into your target semester slot on the right.</p>
-                <div id="module-pool" class="flex-1 overflow-y-auto space-y-2 pr-1 border-2 border-dashed border-slate-100 p-2 rounded-xl" ondragover="allowDrop(event)" ondrdrop="dropToPool(event)">
+            <!-- Left Column: Unassigned Modules Catalog Pool -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[650px]">
+                <h2 class="font-bold text-slate-900 text-base mb-1">Module Catalog Pool</h2>
+                <p class="text-xs text-slate-400 mb-4">Drag modules to semesters, or drag back here to unassign.</p>
+                <div id="module-pool" class="flex-1 overflow-y-auto space-y-2 pr-1 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/30" ondragover="allowDrop(event)" ondrop="dropToPool(event)">
                     <!-- Populated dynamically -->
                 </div>
             </div>
 
-            <!-- Right 2 Columns: Semester Timetable Planner -->
+            <!-- Right 2 Columns: Semester Timetable Drop Zones -->
             <div class="lg:col-span-2 space-y-6">
-                <h2 class="font-bold text-slate-900 text-lg">Semester Timetable Planner</h2>
+                <h2 class="font-bold text-slate-900 text-lg">Semester Planner (Drag & Drop)</h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Semester 1 -->
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[330px]">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[300px]">
                         <div class="flex justify-between items-center mb-3">
                             <h3 class="font-bold text-slate-800 text-sm">Semester 1 (WS)</h3>
                             <span id="sem-1-ects" class="text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-full">0 ECTS</span>
                         </div>
-                        <div id="drop-sem-1" class="flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 1)">
-                        </div>
+                        <div id="drop-sem-1" class="flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 1)"></div>
                     </div>
 
                     <!-- Semester 2 -->
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[330px]">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[300px]">
                         <div class="flex justify-between items-center mb-3">
                             <h3 class="font-bold text-slate-800 text-sm">Semester 2 (SS)</h3>
                             <span id="sem-2-ects" class="text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-full">0 ECTS</span>
                         </div>
-                        <div id="drop-sem-2" class="flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 2)">
-                        </div>
+                        <div id="drop-sem-2" class="flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 2)"></div>
                     </div>
 
                     <!-- Semester 3 -->
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[330px]">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[300px]">
                         <div class="flex justify-between items-center mb-3">
                             <h3 class="font-bold text-slate-800 text-sm">Semester 3 (WS)</h3>
                             <span id="sem-3-ects" class="text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-full">0 ECTS</span>
                         </div>
-                        <div id="drop-sem-3" class="flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 3)">
-                        </div>
+                        <div id="drop-sem-3" class="flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 3)"></div>
                     </div>
 
                     <!-- Semester 4 -->
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[330px]">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[300px]">
                         <div class="flex justify-between items-center mb-3">
                             <h3 class="font-bold text-slate-800 text-sm">Semester 4 (SS)</h3>
                             <span id="sem-4-ects" class="text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-full">0 ECTS</span>
                         </div>
-                        <div id="drop-sem-4" class="flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 4)">
-                        </div>
+                        <div id="drop-sem-4" class="flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 4)"></div>
                     </div>
                 </div>
             </div>
 
         </div>
+
+        <!-- Separate Enrolled Timetable Schedule View -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h2 class="font-bold text-slate-900 text-lg">Enrolled Subjects Timetable</h2>
+                    <p class="text-xs text-slate-400">Real-time schedule summary of all modules assigned to your semesters.</p>
+                </div>
+                <span id="enrolled-count" class="text-xs font-semibold px-3 py-1 bg-slate-100 text-slate-600 rounded-lg">0 Modules Enrolled</span>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                            <th class="py-3 px-4">Semester</th>
+                            <th class="py-3 px-4">Module Title</th>
+                            <th class="py-3 px-4">Category</th>
+                            <th class="py-3 px-4">ECTS</th>
+                            <th class="py-3 px-4">SWS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="timetable-body" class="divide-y divide-slate-100 text-sm">
+                        <tr>
+                            <td colspan="5" class="py-6 text-center text-slate-400 italic">No modules enrolled yet. Drag modules into a semester above to populate your timetable.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
     <script>
         const allModules = [
-            // Fundamentals
-            { id: "f1", name: "Algorithms and Data Structures", ects: 6, cat: "fundamentals" },
-            { id: "f2", name: "Applied Mathematics and Stochastics", ects: 6, cat: "fundamentals" },
-            { id: "f3", name: "Introduction to Mechanics", ects: 6, cat: "fundamentals" },
-            { id: "f4", name: "Mathematics for Data Science", ects: 6, cat: "fundamentals" },
-            { id: "f5", name: "Object-oriented Modeling & Programming", ects: 6, cat: "fundamentals" },
-            { id: "f6", name: "Software Engineering", ects: 6, cat: "fundamentals" },
-            { id: "f7", name: "Statistics", ects: 6, cat: "fundamentals" },
-            // Engineering Methods
-            { id: "em1", name: "Advanced Building Information Modeling", ects: 6, cat: "engineering" },
-            { id: "em2", name: "Complex Dynamics", ects: 6, cat: "engineering" },
-            { id: "em3", name: "Computer models for physical processes", ects: 6, cat: "engineering" },
-            { id: "em4", name: "Design and Interpretation of Experiments", ects: 6, cat: "engineering" },
-            { id: "em5", name: "Experimental Structural Dynamics", ects: 6, cat: "engineering" },
-            { id: "em6", name: "Finite Element Methods", ects: 6, cat: "engineering" },
-            { id: "em7", name: "Indoor Environmental Modeling", ects: 6, cat: "engineering" },
-            { id: "em8", name: "Introduction to Mobility and Transport", ects: 6, cat: "engineering" },
-            { id: "em9", name: "Macroscopic Transport Modeling", ects: 6, cat: "engineering" },
-            { id: "em10", name: "Mechanics of Engineering Materials", ects: 6, cat: "engineering" },
-            { id: "em11", name: "Microscopic Traffic Simulation", ects: 6, cat: "engineering" },
-            { id: "em12", name: "Modelling of Steel Structures", ects: 6, cat: "engineering" },
-            { id: "em13", name: "Optimization", ects: 6, cat: "engineering" },
-            { id: "em14", name: "Simulation Methods in Engineering", ects: 6, cat: "engineering" },
-            { id: "em15", name: "Spatial Information Systems (GIS)", ects: 6, cat: "engineering" },
-            { id: "em16", name: "Stochastic Simulation & Reliability", ects: 6, cat: "engineering" },
-            { id: "em17", name: "Structural Dynamics", ects: 6, cat: "engineering" },
-            // Computer Science Methods
-            { id: "csm1", name: "Computer Graphics: Fundamentals of Imaging", ects: 6, cat: "csm" },
-            { id: "csm2", name: "Formal Methods for Software Engineering", ects: 6, cat: "csm" },
-            { id: "csm3", name: "Generative Software Engineering", ects: 6, cat: "csm" },
-            { id: "csm4", name: "Image Analysis and Object Recognition", ects: 6, cat: "csm" },
-            { id: "csm5", name: "Intro to Machine Learning & Data Mining", ects: 6, cat: "csm" },
-            { id: "csm6", name: "Photogrammetric Computer Vision", ects: 6, cat: "csm" },
-            { id: "csm7", name: "Search Algorithms", ects: 6, cat: "csm" },
-            { id: "csm8", name: "Visualization", ects: 6, cat: "csm" },
-            // Electives
-            { id: "el1", name: "Elective Module / Language Course 1", ects: 6, cat: "electives" },
-            { id: "el2", name: "Elective Module / Language Course 2", ects: 6, cat: "electives" },
-            // Project
-            { id: "proj1", name: "Master Project (Scientific Group Project)", ects: 12, cat: "project" },
-            // Master Module
-            { id: "m_prep", name: "Preparatory Research Phase", ects: 3, cat: "master" },
-            { id: "m_thesis", name: "Master's Thesis and Defense", ects: 21, cat: "master" }
+            // Fundamentals[cite: 4]
+            { id: "f1", name: "Algorithms and Data Structures", ects: 6, sws: "4 SWS", cat: "fundamentals", catName: "Fundamentals" },
+            { id: "f2", name: "Applied Mathematics and Stochastics", ects: 6, sws: "6 SWS", cat: "fundamentals", catName: "Fundamentals" },
+            { id: "f3", name: "Introduction to Mechanics", ects: 6, sws: "4 SWS", cat: "fundamentals", catName: "Fundamentals" },
+            { id: "f4", name: "Mathematics for Data Science", ects: 6, sws: "4 SWS", cat: "fundamentals", catName: "Fundamentals" },
+            { id: "f5", name: "Object-oriented Modeling & Programming", ects: 6, sws: "4 SWS", cat: "fundamentals", catName: "Fundamentals" },
+            { id: "f6", name: "Software Engineering", ects: 6, sws: "4 SWS", cat: "fundamentals", catName: "Fundamentals" },
+            { id: "f7", name: "Statistics", ects: 6, sws: "4 SWS", cat: "fundamentals", catName: "Fundamentals" },
+            // Engineering Methods[cite: 19]
+            { id: "em1", name: "Advanced Building Information Modeling", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
+            { id: "em2", name: "Complex Dynamics", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
+            { id: "em3", name: "Computer models for physical processes", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
+            { id: "em4", name: "Design and Interpretation of Experiments", ects: 6, sws: "6 SWS", cat: "engineering", catName: "Engineering Methods" },
+            { id: "em5", name: "Experimental Structural Dynamics", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
+            { id: "em6", name: "Finite Element Methods", ects: 6, sws: "6 SWS", cat: "engineering", catName: "Engineering Methods" },
+            { id: "em7", name: "Indoor Environmental Modeling", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
+            { id: "em8", name: "Introduction to Mobility and Transport", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
+            { id: "em9", name: "Macroscopic Transport Modeling", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
+            { id: "em10", name: "Mechanics of Engineering Materials", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
+            { id: "em11", name: "Microscopic Traffic Simulation", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
+            { id: "em12", name: "Modelling of Steel Structures", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
+            { id: "em13", name: "Optimization", ects: 6, sws: "6 SWS", cat: "engineering", catName: "Engineering Methods" },
+            { id: "em14", name: "Simulation Methods in Engineering", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
+            { id: "em15", name: "Spatial Information Systems (GIS)", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
+            { id: "em16", name: "Stochastic Simulation & Reliability", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
+            { id: "em17", name: "Structural Dynamics", ects: 6, sws: "6 SWS", cat: "engineering", catName: "Engineering Methods" },
+            // Computer Science Methods[cite: 55]
+            { id: "csm1", name: "Computer Graphics: Fundamentals of Imaging", ects: 6, sws: "4 SWS", cat: "csm", catName: "CS Methods" },
+            { id: "csm2", name: "Formal Methods for Software Engineering", ects: 6, sws: "4 SWS", cat: "csm", catName: "CS Methods" },
+            { id: "csm3", name: "Generative Software Engineering", ects: 6, sws: "4 SWS", cat: "csm", catName: "CS Methods" },
+            { id: "csm4", name: "Image Analysis and Object Recognition", ects: 6, sws: "4 SWS", cat: "csm", catName: "CS Methods" },
+            { id: "csm5", name: "Intro to Machine Learning & Data Mining", ects: 6, sws: "3 SWS", cat: "csm", catName: "CS Methods" },
+            { id: "csm6", name: "Photogrammetric Computer Vision", ects: 6, sws: "4 SWS", cat: "csm", catName: "CS Methods" },
+            { id: "csm7", name: "Search Algorithms", ects: 6, sws: "3 SWS", cat: "csm", catName: "CS Methods" },
+            { id: "csm8", name: "Visualization", ects: 6, sws: "3 SWS", cat: "csm", catName: "CS Methods" },
+            // Electives[cite: 3]
+            { id: "el1", name: "Elective Module / Language Course 1", ects: 6, sws: "2 SWS", cat: "electives", catName: "Electives" },
+            { id: "el2", name: "Elective Module / Language Course 2", ects: 6, sws: "2 SWS", cat: "electives", catName: "Electives" },
+            // Project[cite: 75]
+            { id: "proj1", name: "Master Project (Scientific Group Project)", ects: 12, sws: "-", cat: "project", catName: "Project" },
+            // Master Module[cite: 77]
+            { id: "m_prep", name: "Preparatory Research Phase", ects: 3, sws: "2 SWS", cat: "master", catName: "Master Module" },
+            { id: "m_thesis", name: "Master's Thesis and Defense", ects: 21, sws: "-", cat: "master", catName: "Master Module" }
         ];
 
         function loadState() {
-            const saved = localStorage.getItem('shivangi_drag_tracker');
-            // State maps moduleId -> semester number (null/undefined if in pool)
+            const saved = localStorage.getItem('shivangi_drag_tracker_v2');
             return saved ? JSON.parse(saved) : {};
         }
 
         function saveState(state) {
-            localStorage.setItem('shivangi_drag_tracker', JSON.stringify(state));
+            localStorage.setItem('shivangi_drag_tracker_v2', JSON.stringify(state));
         }
 
         function render() {
@@ -189,25 +215,29 @@
             for(let i=1; i<=4; i++) {
                 document.getElementById(`drop-sem-${i}`).innerHTML = '';
             }
+            const timetableBody = document.getElementById('timetable-body');
+            timetableBody.innerHTML = '';
 
             let totals = { fundamentals: 0, engineering: 0, csm: 0, electives: 0, project: 0, master: 0, overall: 0 };
             let semEcts = { 1: 0, 2: 0, 3: 0, 4: 0 };
+            let enrolledList = [];
 
             allModules.forEach(mod => {
                 const assignedSem = state[mod.id];
                 
-                // Calculate totals if assigned to a semester
                 if(assignedSem) {
                     totals[mod.cat] += mod.ects;
                     totals.overall += mod.ects;
                     semEcts[assignedSem] += mod.ects;
+                    enrolledList.push({ ...mod, sem: assignedSem });
                 }
 
-                // Create Draggable Element HTML
+                // Create Draggable Card element
                 const card = document.createElement('div');
-                card.className = "bg-white p-3 rounded-xl border border-slate-200 shadow-xs cursor-grab flex items-center justify-between text-xs font-medium text-slate-700 hover:border-indigo-300 transition";
+                card.className = "bg-white p-3 rounded-xl border border-slate-200 shadow-xs cursor-grab flex items-center justify-between text-xs font-medium text-slate-700 hover:border-indigo-300 transition select-none";
                 card.draggable = true;
                 card.id = mod.id;
+                
                 card.ondragstart = (e) => {
                     e.dataTransfer.setData('text/plain', mod.id);
                     setTimeout(() => card.classList.add('dragging'), 0);
@@ -240,6 +270,27 @@
             for(let i=1; i<=4; i++) {
                 document.getElementById(`sem-${i}-ects`).innerText = `${semEcts[i]} ECTS`;
             }
+
+            // Update Enrolled Timetable Table
+            document.getElementById('enrolled-count').innerText = `${enrolledList.length} Modules Enrolled`;
+            if(enrolledList.length === 0) {
+                timetableBody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400 italic">No modules enrolled yet. Drag modules into a semester above to populate your timetable.</td></tr>`;
+            } else {
+                // Sort by semester
+                enrolledList.sort((a, b) => a.sem - b.sem);
+                enrolledList.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.className = "hover:bg-slate-50/50 transition";
+                    row.innerHTML = `
+                        <td class="py-3 px-4 font-semibold text-indigo-600">Sem ${item.sem}</td>
+                        <td class="py-3 px-4 font-medium text-slate-800">${item.name}</td>
+                        <td class="py-3 px-4 text-slate-500">${item.catName}</td>
+                        <td class="py-3 px-4 text-slate-600">${item.ects} ECTS</td>
+                        <td class="py-3 px-4 text-slate-600">${item.sws}</td>
+                    `;
+                    timetableBody.appendChild(row);
+                });
+            }
         }
 
         function allowDrop(e) {
@@ -270,12 +321,12 @@
 
         function resetProgress() {
             if(confirm("Reset all semester placements?")) {
-                localStorage.removeItem('shivangi_drag_tracker');
+                localStorage.removeItem('shivangi_drag_tracker_v2');
                 render();
             }
         }
 
-        // Initialize render
+        // Initialize render on load
         render();
     </script>
 </body>
