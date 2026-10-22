@@ -3,148 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shivangi's Digital Engineering Tracker & Timetable</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Shivangi's Digital Engineering Tracker & Weekly Timetable</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f3ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .dragging { opacity: 0.4; }
+        .dragging { opacity: 0.4; transform: scale(0.98); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 p-4 md:p-8">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen p-3 md:p-6 lg:p-8">
 
-    <div class="max-w-7xl mx-auto space-y-8">
+    <div class="max-w-7xl mx-auto space-y-6">
+        
         <!-- Header -->
-        <header class="bg-white shadow-sm rounded-2xl p-6 border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <header class="bg-white shadow-sm rounded-2xl p-5 md:p-6 border border-slate-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-                <h1 class="text-2xl md:text-3xl font-bold text-slate-900">Shivangi's Digital Engineering Tracker</h1>
-                <p class="text-slate-500 text-sm mt-1">M.Sc. Digital Engineering • Bauhaus-Universität Weimar (120 ECTS Total)[cite: 3]</p>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <h1 class="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">Shivangi's Digital Engineering Tracker</h1>
+                    <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/60">WiSe 2026 Schedule Active</span>
+                </div>
+                <p class="text-slate-500 text-xs md:text-sm mt-1">M.Sc. Digital Engineering • Bauhaus-Universität Weimar • Total Target: 120 ECTS</p>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="resetProgress()" class="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition cursor-pointer">Reset All</button>
+                <button onclick="resetProgress()" class="px-4 py-2 text-xs md:text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-xs">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    Reset All Progress
+                </button>
             </div>
         </header>
 
-        <!-- Summary Counters -->
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 col-span-2 md:col-span-4 lg:col-span-1 flex flex-col justify-between">
+        <!-- Progress Summary Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 md:gap-4">
+            <!-- Overall Progress Card -->
+            <div class="bg-gradient-to-br from-indigo-900 to-slate-900 text-white p-4 rounded-2xl shadow-md col-span-2 md:col-span-4 lg:col-span-1 flex flex-col justify-between">
                 <div>
-                    <span class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Total Progress</span>
-                    <div class="text-2xl font-bold text-indigo-600 mt-1"><span id="total-ects">0</span> / 120 ECTS</div>
+                    <span class="text-[10px] font-bold tracking-widest uppercase text-indigo-200/80">Total ECTS Progress</span>
+                    <div class="text-2xl font-extrabold text-white mt-1"><span id="total-ects">0</span> <span class="text-xs font-medium text-indigo-200">/ 120</span></div>
                 </div>
-                <div class="w-full bg-slate-100 rounded-full h-2 mt-3 overflow-hidden">
-                    <div id="total-bar" class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                <div class="mt-3">
+                    <div class="w-full bg-slate-700/60 rounded-full h-2 overflow-hidden backdrop-blur-xs">
+                        <div id="total-bar" class="bg-indigo-400 h-2 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    </div>
+                    <span id="total-pct" class="text-[10px] font-medium text-indigo-200 mt-1 inline-block">0% completed</span>
                 </div>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                <span class="text-xs font-medium text-slate-500 block">Fundamentals[cite: 4]</span>
-                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-fund-earned">0</span> / 18</div>
+
+            <!-- Category Cards -->
+            <div class="bg-white p-3.5 rounded-2xl shadow-xs border border-slate-200/80 flex flex-col justify-between">
+                <span class="text-[11px] font-semibold text-slate-500">Fundamentals</span>
+                <div class="mt-2">
+                    <div class="text-base font-bold text-slate-800"><span id="cat-fund-earned">0</span> <span class="text-xs font-normal text-slate-400">/ 18 ECTS</span></div>
+                    <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden"><div id="bar-fund" class="bg-blue-500 h-1.5 rounded-full transition-all duration-300" style="width:0%"></div></div>
+                </div>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                <span class="text-xs font-medium text-slate-500 block">Engineering M.[cite: 19]</span>
-                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-eng-earned">0</span> / 36</div>
+
+            <div class="bg-white p-3.5 rounded-2xl shadow-xs border border-slate-200/80 flex flex-col justify-between">
+                <span class="text-[11px] font-semibold text-slate-500">Engineering M.</span>
+                <div class="mt-2">
+                    <div class="text-base font-bold text-slate-800"><span id="cat-eng-earned">0</span> <span class="text-xs font-normal text-slate-400">/ 36 ECTS</span></div>
+                    <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden"><div id="bar-eng" class="bg-emerald-500 h-1.5 rounded-full transition-all duration-300" style="width:0%"></div></div>
+                </div>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                <span class="text-xs font-medium text-slate-500 block">CS Methods[cite: 55]</span>
-                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-csm-earned">0</span> / 18</div>
+
+            <div class="bg-white p-3.5 rounded-2xl shadow-xs border border-slate-200/80 flex flex-col justify-between">
+                <span class="text-[11px] font-semibold text-slate-500">CS Methods</span>
+                <div class="mt-2">
+                    <div class="text-base font-bold text-slate-800"><span id="cat-csm-earned">0</span> <span class="text-xs font-normal text-slate-400">/ 18 ECTS</span></div>
+                    <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden"><div id="bar-csm" class="bg-purple-500 h-1.5 rounded-full transition-all duration-300" style="width:0%"></div></div>
+                </div>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                <span class="text-xs font-medium text-slate-500 block">Electives[cite: 3]</span>
-                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-elec-earned">0</span> / 12</div>
+
+            <div class="bg-white p-3.5 rounded-2xl shadow-xs border border-slate-200/80 flex flex-col justify-between">
+                <span class="text-[11px] font-semibold text-slate-500">Electives / Lang.</span>
+                <div class="mt-2">
+                    <div class="text-base font-bold text-slate-800"><span id="cat-elec-earned">0</span> <span class="text-xs font-normal text-slate-400">/ 12 ECTS</span></div>
+                    <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden"><div id="bar-elec" class="bg-amber-500 h-1.5 rounded-full transition-all duration-300" style="width:0%"></div></div>
+                </div>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                <span class="text-xs font-medium text-slate-500 block">Project[cite: 75]</span>
-                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-proj-earned">0</span> / 12</div>
+
+            <div class="bg-white p-3.5 rounded-2xl shadow-xs border border-slate-200/80 flex flex-col justify-between">
+                <span class="text-[11px] font-semibold text-slate-500">Project Module</span>
+                <div class="mt-2">
+                    <div class="text-base font-bold text-slate-800"><span id="cat-proj-earned">0</span> <span class="text-xs font-normal text-slate-400">/ 12 ECTS</span></div>
+                    <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden"><div id="bar-proj" class="bg-rose-500 h-1.5 rounded-full transition-all duration-300" style="width:0%"></div></div>
+                </div>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                <span class="text-xs font-medium text-slate-500 block">Master Module[cite: 77]</span>
-                <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-master-earned">0</span> / 24</div>
+
+            <div class="bg-white p-3.5 rounded-2xl shadow-xs border border-slate-200/80 flex flex-col justify-between">
+                <span class="text-[11px] font-semibold text-slate-500">Master Thesis</span>
+                <div class="mt-2">
+                    <div class="text-base font-bold text-slate-800"><span id="cat-master-earned">0</span> <span class="text-xs font-normal text-slate-400">/ 24 ECTS</span></div>
+                    <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden"><div id="bar-master" class="bg-teal-500 h-1.5 rounded-full transition-all duration-300" style="width:0%"></div></div>
+                </div>
             </div>
         </div>
 
-        <!-- Main Layout: Module Pool & Semester Timetable Planner -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <!-- Left Column: Unassigned Modules Catalog Pool -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[650px]">
-                <h2 class="font-bold text-slate-900 text-base mb-1">Module Catalog Pool</h2>
-                <p class="text-xs text-slate-400 mb-4">Drag modules to semesters, or drag back here to unassign.</p>
-                <div id="module-pool" class="flex-1 overflow-y-auto space-y-2 pr-1 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/30" ondragover="allowDrop(event)" ondrop="dropToPool(event)">
-                    <!-- Populated dynamically -->
+        <!-- Weekly Timetable Schedule Matrix -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <span>🗓️</span> Weekly Class Timetable Matrix (WiSe 2026)
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Live visual schedule of your enrolled subjects, including lectures, exercise sessions, and locations.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-1 bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200/60 rounded-lg">Auto-synchronized with Semester 1</span>
                 </div>
             </div>
 
-            <!-- Right 2 Columns: Semester Timetable Drop Zones -->
-            <div class="lg:col-span-2 space-y-6">
-                <h2 class="font-bold text-slate-900 text-lg">Semester Planner (Drag & Drop)</h2>
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full min-w-[700px] border-collapse text-xs">
+                    <thead>
+                        <tr>
+                            <th class="w-24 p-2.5 bg-slate-50 text-slate-500 font-semibold text-left border border-slate-200/60 rounded-tl-xl">Time Slot</th>
+                            <th class="p-2.5 bg-slate-50 text-slate-700 font-bold text-center border border-slate-200/60 w-1/5">Monday</th>
+                            <th class="p-2.5 bg-slate-50 text-slate-700 font-bold text-center border border-slate-200/60 w-1/5">Tuesday</th>
+                            <th class="p-2.5 bg-slate-50 text-slate-700 font-bold text-center border border-slate-200/60 w-1/5">Wednesday</th>
+                            <th class="p-2.5 bg-slate-50 text-slate-700 font-bold text-center border border-slate-200/60 w-1/5">Thursday</th>
+                            <th class="p-2.5 bg-slate-50 text-slate-700 font-bold text-center border border-slate-200/60 w-1/5 rounded-tr-xl">Friday</th>
+                        </tr>
+                    </thead>
+                    <tbody id="matrix-tbody" class="divide-y divide-slate-100">
+                        <!-- Rendered via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Drag & Drop Semester Planner -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Catalog Pool (Left Column) -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col h-[600px]">
+                <div class="mb-3">
+                    <h2 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                        <span>📚</span> Module Catalog Pool
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Drag subjects into semesters to enroll, or drag them back here to unassign.</p>
+                </div>
+                
+                <div id="module-pool" class="flex-1 overflow-y-auto custom-scrollbar space-y-2 border-2 border-dashed border-slate-200 p-2.5 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToPool(event)">
+                    <!-- Dynamic Modules -->
+                </div>
+            </div>
+
+            <!-- 4 Semester Drop Zones (Right 2 Columns) -->
+            <div class="lg:col-span-2 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="font-bold text-slate-900 text-base">Semester Study Plan (Drag & Drop)</h2>
+                    <span class="text-xs text-slate-400">Drag items between semesters to organize your degree</span>
+                </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Semester 1 -->
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[300px]">
-                        <div class="flex justify-between items-center mb-3">
-                            <h3 class="font-bold text-slate-800 text-sm">Semester 1 (WS)</h3>
-                            <span id="sem-1-ects" class="text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-full">0 ECTS</span>
+                    <div class="bg-white p-4.5 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col h-[280px]">
+                        <div class="flex justify-between items-center mb-2.5 pb-2 border-b border-slate-100">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-sm">Semester 1 (WS)</h3>
+                                <span class="text-[10px] text-indigo-600 font-medium">WiSe 2026 Enrolled Schedule</span>
+                            </div>
+                            <span id="sem-1-ects" class="text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200/50 rounded-full">0 ECTS</span>
                         </div>
-                        <div id="drop-sem-1" class="flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 1)"></div>
+                        <div id="drop-sem-1" class="flex-1 overflow-y-auto custom-scrollbar space-y-2 border-2 border-dashed border-slate-200 p-2 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 1)"></div>
                     </div>
 
                     <!-- Semester 2 -->
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[300px]">
-                        <div class="flex justify-between items-center mb-3">
-                            <h3 class="font-bold text-slate-800 text-sm">Semester 2 (SS)</h3>
-                            <span id="sem-2-ects" class="text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-full">0 ECTS</span>
+                    <div class="bg-white p-4.5 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col h-[280px]">
+                        <div class="flex justify-between items-center mb-2.5 pb-2 border-b border-slate-100">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-sm">Semester 2 (SS)</h3>
+                                <span class="text-[10px] text-slate-400 font-medium">Summer Term</span>
+                            </div>
+                            <span id="sem-2-ects" class="text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200/50 rounded-full">0 ECTS</span>
                         </div>
-                        <div id="drop-sem-2" class="flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 2)"></div>
+                        <div id="drop-sem-2" class="flex-1 overflow-y-auto custom-scrollbar space-y-2 border-2 border-dashed border-slate-200 p-2 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 2)"></div>
                     </div>
 
                     <!-- Semester 3 -->
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[300px]">
-                        <div class="flex justify-between items-center mb-3">
-                            <h3 class="font-bold text-slate-800 text-sm">Semester 3 (WS)</h3>
-                            <span id="sem-3-ects" class="text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-full">0 ECTS</span>
+                    <div class="bg-white p-4.5 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col h-[280px]">
+                        <div class="flex justify-between items-center mb-2.5 pb-2 border-b border-slate-100">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-sm">Semester 3 (WS)</h3>
+                                <span class="text-[10px] text-slate-400 font-medium">Winter Term & Project</span>
+                            </div>
+                            <span id="sem-3-ects" class="text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200/50 rounded-full">0 ECTS</span>
                         </div>
-                        <div id="drop-sem-3" class="flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 3)"></div>
+                        <div id="drop-sem-3" class="flex-1 overflow-y-auto custom-scrollbar space-y-2 border-2 border-dashed border-slate-200 p-2 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 3)"></div>
                     </div>
 
                     <!-- Semester 4 -->
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-[300px]">
-                        <div class="flex justify-between items-center mb-3">
-                            <h3 class="font-bold text-slate-800 text-sm">Semester 4 (SS)</h3>
-                            <span id="sem-4-ects" class="text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-full">0 ECTS</span>
+                    <div class="bg-white p-4.5 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col h-[280px]">
+                        <div class="flex justify-between items-center mb-2.5 pb-2 border-b border-slate-100">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-sm">Semester 4 (SS)</h3>
+                                <span class="text-[10px] text-slate-400 font-medium">Master Thesis Phase</span>
+                            </div>
+                            <span id="sem-4-ects" class="text-xs font-bold px-2.5 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200/50 rounded-full">0 ECTS</span>
                         </div>
-                        <div id="drop-sem-4" class="flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-slate-200 p-3 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 4)"></div>
+                        <div id="drop-sem-4" class="flex-1 overflow-y-auto custom-scrollbar space-y-2 border-2 border-dashed border-slate-200 p-2 rounded-xl bg-slate-50/50" ondragover="allowDrop(event)" ondrop="dropToSemester(event, 4)"></div>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <!-- Separate Enrolled Timetable Schedule View with Editable Days & Times -->
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-            <div class="flex justify-between items-center mb-4">
+        <!-- Editable Enrolled Subjects Schedule & Location Details -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                 <div>
-                    <h2 class="font-bold text-slate-900 text-lg">Enrolled Subjects Timetable & Schedule</h2>
-                    <p class="text-xs text-slate-400">Configure your specific class days and timing matching your Moodle schedule below.</p>
+                    <h2 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                        <span>⚙️</span> Detailed Enrolled Schedule & Location Customizer
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Edit room numbers, lecture/exercise timing, and notes. Changes auto-save in real time.</p>
                 </div>
-                <span id="enrolled-count" class="text-xs font-semibold px-3 py-1 bg-slate-100 text-slate-600 rounded-lg">0 Modules Enrolled</span>
+                <span id="enrolled-count" class="text-xs font-semibold px-3 py-1 bg-slate-100 text-slate-700 rounded-lg">0 Enrolled</span>
             </div>
             
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse min-w-[800px]">
                     <thead>
-                        <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                            <th class="py-3 px-4">Semester</th>
-                            <th class="py-3 px-4">Module Title</th>
-                            <th class="py-3 px-4">Category</th>
-                            <th class="py-3 px-4">ECTS / SWS</th>
-                            <th class="py-3 px-4">Day of Week</th>
-                            <th class="py-3 px-4">Time (e.g. 09:00 - 11:30)</th>
+                        <tr class="border-b border-slate-200/80 text-[11px] font-semibold text-slate-400 uppercase tracking-wider bg-slate-50">
+                            <th class="py-2.5 px-3">Sem</th>
+                            <th class="py-2.5 px-3">Subject Title</th>
+                            <th class="py-2.5 px-3">Category</th>
+                            <th class="py-2.5 px-3">ECTS</th>
+                            <th class="py-2.5 px-3">Day(s)</th>
+                            <th class="py-2.5 px-3">Time Slot(s)</th>
+                            <th class="py-2.5 px-3">Location & Notes</th>
                         </tr>
                     </thead>
-                    <tbody id="timetable-body" class="divide-y divide-slate-100 text-sm">
-                        <tr>
-                            <td colspan="6" class="py-6 text-center text-slate-400 italic">No modules enrolled yet. Drag modules into a semester above to populate your timetable.</td>
-                        </tr>
+                    <tbody id="timetable-body" class="divide-y divide-slate-100 text-xs">
+                        <!-- Populated dynamically -->
                     </tbody>
                 </table>
             </div>
@@ -153,69 +265,144 @@
     </div>
 
     <script>
+        // Full Digital Engineering Course Catalog
         const allModules = [
-            // Fundamentals[cite: 4]
-            { id: "f1", name: "Algorithms and Data Structures", ects: 6, sws: "4 SWS", cat: "fundamentals", catName: "Fundamentals" },
-            { id: "f2", name: "Applied Mathematics and Stochastics", ects: 6, sws: "6 SWS", cat: "fundamentals", catName: "Fundamentals" },
-            { id: "f3", name: "Introduction to Mechanics", ects: 6, sws: "4 SWS", cat: "fundamentals", catName: "Fundamentals" },
-            { id: "f4", name: "Mathematics for Data Science", ects: 6, sws: "4 SWS", cat: "fundamentals", catName: "Fundamentals" },
-            { id: "f5", name: "Object-oriented Modeling & Programming", ects: 6, sws: "4 SWS", cat: "fundamentals", catName: "Fundamentals" },
-            { id: "f6", name: "Software Engineering", ects: 6, sws: "4 SWS", cat: "fundamentals", catName: "Fundamentals" },
-            { id: "f7", name: "Statistics", ects: 6, sws: "4 SWS", cat: "fundamentals", catName: "Fundamentals" },
-            // Engineering Methods[cite: 19]
-            { id: "em1", name: "Advanced Building Information Modeling", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
-            { id: "em2", name: "Complex Dynamics", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
-            { id: "em3", name: "Computer models for physical processes", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
-            { id: "em4", name: "Design and Interpretation of Experiments", ects: 6, sws: "6 SWS", cat: "engineering", catName: "Engineering Methods" },
-            { id: "em5", name: "Experimental Structural Dynamics", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
-            { id: "em6", name: "Finite Element Methods", ects: 6, sws: "6 SWS", cat: "engineering", catName: "Engineering Methods" },
-            { id: "em7", name: "Indoor Environmental Modeling", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
-            { id: "em8", name: "Introduction to Mobility and Transport", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
-            { id: "em9", name: "Macroscopic Transport Modeling", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
-            { id: "em10", name: "Mechanics of Engineering Materials", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
-            { id: "em11", name: "Microscopic Traffic Simulation", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
-            { id: "em12", name: "Modelling of Steel Structures", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
-            { id: "em13", name: "Optimization", ects: 6, sws: "6 SWS", cat: "engineering", catName: "Engineering Methods" },
-            { id: "em14", name: "Simulation Methods in Engineering", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
-            { id: "em15", name: "Spatial Information Systems (GIS)", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
-            { id: "em16", name: "Stochastic Simulation & Reliability", ects: 6, sws: "4 SWS", cat: "engineering", catName: "Engineering Methods" },
-            { id: "em17", name: "Structural Dynamics", ects: 6, sws: "6 SWS", cat: "engineering", catName: "Engineering Methods" },
-            // Computer Science Methods[cite: 55]
-            { id: "csm1", name: "Computer Graphics: Fundamentals of Imaging", ects: 6, sws: "4 SWS", cat: "csm", catName: "CS Methods" },
-            { id: "csm2", name: "Formal Methods for Software Engineering", ects: 6, sws: "4 SWS", cat: "csm", catName: "CS Methods" },
-            { id: "csm3", name: "Generative Software Engineering", ects: 6, sws: "4 SWS", cat: "csm", catName: "CS Methods" },
-            { id: "csm4", name: "Image Analysis and Object Recognition", ects: 6, sws: "4 SWS", cat: "csm", catName: "CS Methods" },
-            { id: "csm5", name: "Intro to Machine Learning & Data Mining", ects: 6, sws: "3 SWS", cat: "csm", catName: "CS Methods" },
-            { id: "csm6", name: "Photogrammetric Computer Vision", ects: 6, sws: "4 SWS", cat: "csm", catName: "CS Methods" },
-            { id: "csm7", name: "Search Algorithms", ects: 6, sws: "3 SWS", cat: "csm", catName: "CS Methods" },
-            { id: "csm8", name: "Visualization", ects: 6, sws: "3 SWS", cat: "csm", catName: "CS Methods" },
-            // Electives[cite: 3]
-            { id: "el1", name: "Elective Module / Language Course 1", ects: 6, sws: "2 SWS", cat: "electives", catName: "Electives" },
-            { id: "el2", name: "Elective Module / Language Course 2", ects: 6, sws: "2 SWS", cat: "electives", catName: "Electives" },
-            // Project[cite: 75]
-            { id: "proj1", name: "Master Project (Scientific Group Project)", ects: 12, sws: "-", cat: "project", catName: "Project" },
-            // Master Module[cite: 77]
-            { id: "m_prep", name: "Preparatory Research Phase", ects: 3, sws: "2 SWS", cat: "master", catName: "Master Module" },
-            { id: "m_thesis", name: "Master's Thesis and Defense", ects: 21, sws: "-", cat: "master", catName: "Master Module" }
+            // Fundamentals
+            { id: "f1", name: "Object-oriented Modeling & Programming in Engineering", ects: 6, cat: "fundamentals", catName: "Fundamentals" },
+            { id: "f2", name: "Software Engineering", ects: 6, cat: "fundamentals", catName: "Fundamentals" },
+            { id: "f3", name: "Algorithms and Data Structures", ects: 6, cat: "fundamentals", catName: "Fundamentals" },
+            { id: "f4", name: "Applied Mathematics and Stochastics", ects: 6, cat: "fundamentals", catName: "Fundamentals" },
+            { id: "f5", name: "Introduction to Mechanics", ects: 6, cat: "fundamentals", catName: "Fundamentals" },
+            { id: "f6", name: "Mathematics for Data Science", ects: 6, cat: "fundamentals", catName: "Fundamentals" },
+            { id: "f7", name: "Statistics", ects: 6, cat: "fundamentals", catName: "Fundamentals" },
+
+            // Engineering Methods
+            { id: "em1", name: "Design and Interpretation of Experiments", ects: 6, cat: "engineering", catName: "Engineering Methods" },
+            { id: "em2", name: "Spatial Information Systems (GIS)", ects: 6, cat: "engineering", catName: "Engineering Methods" },
+            { id: "em3", name: "Advanced Building Information Modeling", ects: 6, cat: "engineering", catName: "Engineering Methods" },
+            { id: "em4", name: "Complex Dynamics", ects: 6, cat: "engineering", catName: "Engineering Methods" },
+            { id: "em5", name: "Computer models for physical processes", ects: 6, cat: "engineering", catName: "Engineering Methods" },
+            { id: "em6", name: "Experimental Structural Dynamics", ects: 6, cat: "engineering", catName: "Engineering Methods" },
+            { id: "em7", name: "Finite Element Methods", ects: 6, cat: "engineering", catName: "Engineering Methods" },
+            { id: "em8", name: "Indoor Environmental Modeling", ects: 6, cat: "engineering", catName: "Engineering Methods" },
+            { id: "em9", name: "Introduction to Mobility and Transport", ects: 6, cat: "engineering", catName: "Engineering Methods" },
+            { id: "em10", name: "Macroscopic Transport Modeling", ects: 6, cat: "engineering", catName: "Engineering Methods" },
+            { id: "em11", name: "Mechanics of Engineering Materials", ects: 6, cat: "engineering", catName: "Engineering Methods" },
+            { id: "em12", name: "Optimization", ects: 6, cat: "engineering", catName: "Engineering Methods" },
+            { id: "em13", name: "Structural Dynamics", ects: 6, cat: "engineering", catName: "Engineering Methods" },
+
+            // CS Methods
+            { id: "csm1", name: "Introduction to Machine Learning & Data Mining", ects: 6, cat: "csm", catName: "CS Methods" },
+            { id: "csm2", name: "Computer Graphics: Fundamentals of Imaging", ects: 6, cat: "csm", catName: "CS Methods" },
+            { id: "csm3", name: "Formal Methods for Software Engineering", ects: 6, cat: "csm", catName: "CS Methods" },
+            { id: "csm4", name: "Image Analysis and Object Recognition", ects: 6, cat: "csm", catName: "CS Methods" },
+            { id: "csm5", name: "Photogrammetric Computer Vision", ects: 6, cat: "csm", catName: "CS Methods" },
+            { id: "csm6", name: "Search Algorithms", ects: 6, cat: "csm", catName: "CS Methods" },
+            { id: "csm7", name: "Visualization", ects: 6, cat: "csm", catName: "CS Methods" },
+
+            // Electives / Language
+            { id: "el1", name: "Deutsch als Fremdsprache (DaF A2.1)", ects: 3, cat: "electives", catName: "Electives / Language" },
+            { id: "el2", name: "Elective Subject / Academic English", ects: 3, cat: "electives", catName: "Electives / Language" },
+            { id: "el3", name: "Intercultural Communication / Elective", ects: 6, cat: "electives", catName: "Electives / Language" },
+
+            // Project
+            { id: "proj1", name: "Master Project (Scientific Group Project)", ects: 12, cat: "project", catName: "Project Module" },
+
+            // Master Module
+            { id: "m_prep", name: "Preparatory Research Phase", ects: 3, cat: "master", catName: "Master Module" },
+            { id: "m_thesis", name: "Master's Thesis and Defense", ects: 21, cat: "master", catName: "Master Module" }
         ];
 
+        // WiSe 2026 Default Schedule Defaults for Shivangi
+        const defaultScheduleData = {
+            "f1": {
+                sem: 1,
+                day: "Mon, Tue, Thu",
+                time: "09:15-10:45 (Ex Mon), 15:15-16:45 (Lec Tue), 11:00-12:30 (Ex Thu)",
+                location: "Marienstraße 13C LH B (Lec) / Beton-Pool Coudraystraße 13B (Ex)",
+                sessions: [
+                    { day: "Mon", time: "09:15-10:45", type: "Exercise Slot 1", location: "Beton-Pool, Coudraystr. 13B" },
+                    { day: "Tue", time: "15:15-16:45", type: "Lecture", location: "Marienstraße 13C, LH B" },
+                    { day: "Thu", time: "11:00-12:30", type: "Exercise Slot 2", location: "Beton-Pool, Coudraystr. 13B" }
+                ]
+            },
+            "em1": {
+                sem: 1,
+                day: "Mon, Tue",
+                time: "15:15-16:45 (Mon), 13:30-15:00 (Tue)",
+                location: "Coudraystr. 13B LH 3 (Part 1 Hybrid) / Marienstr. 13C LH A (Part 2)",
+                sessions: [
+                    { day: "Mon", time: "15:15-16:45", type: "Signal Processing (Part 1)", location: "Coudraystr. 13B, LH 3 (Hybrid)" },
+                    { day: "Tue", time: "13:30-15:00", type: "Structural Eng. (Part 2)", location: "Marienstraße 13C, LH A" }
+                ]
+            },
+            "f2": {
+                sem: 1,
+                day: "Mon, Tue",
+                time: "13:30-15:00",
+                location: "Bauhaus Campus (Refer to Moodle)",
+                sessions: [
+                    { day: "Mon", time: "13:30-15:00", type: "Lecture / Session", location: "Main Campus" },
+                    { day: "Tue", time: "13:30-15:00", type: "Lecture / Session", location: "Main Campus" }
+                ]
+            },
+            "em2": {
+                sem: 1,
+                day: "Wed, Fri",
+                time: "09:15-10:45 (Wed), 13:30-15:00 (Fri)",
+                location: "GIS Computer Lab",
+                sessions: [
+                    { day: "Wed", time: "09:15-10:45", type: "Session 1", location: "GIS Lab" },
+                    { day: "Fri", time: "13:30-15:00", type: "Session 2", location: "GIS Lab" }
+                ]
+            },
+            "el1": {
+                sem: 1,
+                day: "Wed",
+                time: "13:30-15:00",
+                location: "Coudraystraße 13A, Room 108 (1st Floor)",
+                sessions: [
+                    { day: "Wed", time: "13:30-15:00", type: "DaF Class", location: "Coudraystraße 13A, Room 108" }
+                ]
+            },
+            "csm1": {
+                sem: 1,
+                day: "Thu",
+                time: "09:15-10:45",
+                location: "Computer Science Dept. (Prof. Stein)",
+                sessions: [
+                    { day: "Thu", time: "09:15-10:45", type: "Lecture", location: "CS Department" }
+                ]
+            }
+        };
+
+        const STORAGE_KEY = 'shivangi_de_wise2026_v4';
+
         function loadState() {
-            const saved = localStorage.getItem('shivangi_drag_tracker_v3');
-            return saved ? JSON.parse(saved) : {};
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (!saved) {
+                return JSON.parse(JSON.stringify(defaultScheduleData));
+            }
+            try {
+                return JSON.parse(saved);
+            } catch(e) {
+                return JSON.parse(JSON.stringify(defaultScheduleData));
+            }
         }
 
         function saveState(state) {
-            localStorage.setItem('shivangi_drag_tracker_v3', JSON.stringify(state));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         }
 
         function render() {
             const state = loadState();
             
-            // Clear containers
+            // Clear drop containers
             document.getElementById('module-pool').innerHTML = '';
             for(let i=1; i<=4; i++) {
                 document.getElementById(`drop-sem-${i}`).innerHTML = '';
             }
+            
             const timetableBody = document.getElementById('timetable-body');
             timetableBody.innerHTML = '';
 
@@ -234,14 +421,15 @@
                     enrolledList.push({ 
                         ...mod, 
                         sem: assignedSem,
-                        day: (typeof item === 'object' && item.day) ? item.day : '',
-                        time: (typeof item === 'object' && item.time) ? item.time : ''
+                        day: (typeof item === 'object' && item.day !== undefined) ? item.day : '',
+                        time: (typeof item === 'object' && item.time !== undefined) ? item.time : '',
+                        location: (typeof item === 'object' && item.location !== undefined) ? item.location : ''
                     });
                 }
 
-                // Create Draggable Card element
+                // Create Card element
                 const card = document.createElement('div');
-                card.className = "bg-white p-3 rounded-xl border border-slate-200 shadow-xs cursor-grab flex items-center justify-between text-xs font-medium text-slate-700 hover:border-indigo-300 transition select-none";
+                card.className = "bg-white p-2.5 rounded-xl border border-slate-200/90 shadow-xs cursor-grab active:cursor-grabbing flex items-center justify-between text-xs font-medium text-slate-800 hover:border-indigo-400 hover:shadow-sm transition select-none group";
                 card.draggable = true;
                 card.id = mod.id;
                 
@@ -251,9 +439,21 @@
                 };
                 card.ondragend = () => card.classList.remove('dragging');
 
+                // Color accent based on category
+                let catBadgeColor = "bg-slate-100 text-slate-600";
+                if (mod.cat === 'fundamentals') catBadgeColor = "bg-blue-50 text-blue-700 border border-blue-200/60";
+                if (mod.cat === 'engineering') catBadgeColor = "bg-emerald-50 text-emerald-700 border border-emerald-200/60";
+                if (mod.cat === 'csm') catBadgeColor = "bg-purple-50 text-purple-700 border border-purple-200/60";
+                if (mod.cat === 'electives') catBadgeColor = "bg-amber-50 text-amber-700 border border-amber-200/60";
+                if (mod.cat === 'project') catBadgeColor = "bg-rose-50 text-rose-700 border border-rose-200/60";
+                if (mod.cat === 'master') catBadgeColor = "bg-teal-50 text-teal-700 border border-teal-200/60";
+
                 card.innerHTML = `
-                    <span class="truncate pr-2">${mod.name}</span>
-                    <span class="shrink-0 px-2 py-0.5 bg-slate-100 text-slate-600 rounded font-semibold">${mod.ects} ECTS</span>
+                    <div class="truncate pr-2">
+                        <span class="block truncate text-slate-800 font-semibold group-hover:text-indigo-600 transition">${mod.name}</span>
+                        <span class="text-[10px] text-slate-400 font-normal">${mod.catName}</span>
+                    </div>
+                    <span class="shrink-0 px-2 py-0.5 ${catBadgeColor} rounded-md text-[10px] font-bold">${mod.ects} ECTS</span>
                 `;
 
                 if(assignedSem) {
@@ -263,45 +463,152 @@
                 }
             });
 
-            // Update Summary Counters & Badges
+            // Update Summary Counters
             document.getElementById('total-ects').innerText = totals.overall;
-            document.getElementById('total-bar').style.width = Math.min((totals.overall / 120) * 100, 100) + '%';
+            const pct = Math.min(Math.round((totals.overall / 120) * 100), 100);
+            document.getElementById('total-bar').style.width = pct + '%';
+            document.getElementById('total-pct').innerText = `${pct}% completed (${totals.overall}/120 ECTS)`;
 
             document.getElementById('cat-fund-earned').innerText = totals.fundamentals;
+            document.getElementById('bar-fund').style.width = Math.min((totals.fundamentals / 18) * 100, 100) + '%';
+
             document.getElementById('cat-eng-earned').innerText = totals.engineering;
+            document.getElementById('bar-eng').style.width = Math.min((totals.engineering / 36) * 100, 100) + '%';
+
             document.getElementById('cat-csm-earned').innerText = totals.csm;
+            document.getElementById('bar-csm').style.width = Math.min((totals.csm / 18) * 100, 100) + '%';
+
             document.getElementById('cat-elec-earned').innerText = totals.electives;
+            document.getElementById('bar-elec').style.width = Math.min((totals.electives / 12) * 100, 100) + '%';
+
             document.getElementById('cat-proj-earned').innerText = totals.project;
+            document.getElementById('bar-proj').style.width = Math.min((totals.project / 12) * 100, 100) + '%';
+
             document.getElementById('cat-master-earned').innerText = totals.master;
+            document.getElementById('bar-master').style.width = Math.min((totals.master / 24) * 100, 100) + '%';
 
             for(let i=1; i<=4; i++) {
                 document.getElementById(`sem-${i}-ects`).innerText = `${semEcts[i]} ECTS`;
             }
 
-            // Update Enrolled Timetable Table
+            // Update Timetable Matrix Grid
+            renderMatrix(state);
+
+            // Update Editable Enrolled Table
             document.getElementById('enrolled-count').innerText = `${enrolledList.length} Modules Enrolled`;
             if(enrolledList.length === 0) {
-                timetableBody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-400 italic">No modules enrolled yet. Drag modules into a semester above to populate your timetable.</td></tr>`;
+                timetableBody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400 italic">No modules enrolled yet. Drag modules into a semester above to populate your timetable.</td></tr>`;
             } else {
                 enrolledList.sort((a, b) => a.sem - b.sem);
                 enrolledList.forEach(item => {
                     const row = document.createElement('tr');
-                    row.className = "hover:bg-slate-50/50 transition";
+                    row.className = "hover:bg-slate-50/80 transition";
                     row.innerHTML = `
-                        <td class="py-3 px-4 font-semibold text-indigo-600">Sem ${item.sem}</td>
-                        <td class="py-3 px-4 font-medium text-slate-800">${item.name}</td>
-                        <td class="py-3 px-4 text-slate-500">${item.catName}</td>
-                        <td class="py-3 px-4 text-slate-600">${item.ects} ECTS <span class="text-xs text-slate-400">(${item.sws})</span></td>
-                        <td class="py-3 px-4">
-                            <input type="text" value="${item.day}" placeholder="e.g. Monday" onchange="updateSchedule('${item.id}', 'day', this.value)" class="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500">
+                        <td class="py-2.5 px-3 font-semibold text-indigo-600">Sem ${item.sem}</td>
+                        <td class="py-2.5 px-3 font-medium text-slate-800">${item.name}</td>
+                        <td class="py-2.5 px-3 text-slate-500 text-[11px]">${item.catName}</td>
+                        <td class="py-2.5 px-3 text-slate-600 font-semibold">${item.ects} ECTS</td>
+                        <td class="py-2.5 px-3">
+                            <input type="text" value="${escapeHtml(item.day)}" placeholder="e.g. Mon, Tue" onchange="updateSchedule('${item.id}', 'day', this.value)" class="w-24 px-2 py-1 text-xs bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:border-indigo-500 focus:bg-white">
                         </td>
-                        <td class="py-3 px-4">
-                            <input type="text" value="${item.time}" placeholder="e.g. 09:30 - 11:00" onchange="updateSchedule('${item.id}', 'time', this.value)" class="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500">
+                        <td class="py-2.5 px-3">
+                            <input type="text" value="${escapeHtml(item.time)}" placeholder="e.g. 09:15 - 10:45" onchange="updateSchedule('${item.id}', 'time', this.value)" class="w-48 px-2 py-1 text-xs bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:border-indigo-500 focus:bg-white">
+                        </td>
+                        <td class="py-2.5 px-3">
+                            <input type="text" value="${escapeHtml(item.location)}" placeholder="e.g. Marienstr. 13C" onchange="updateSchedule('${item.id}', 'location', this.value)" class="w-full px-2 py-1 text-xs bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:border-indigo-500 focus:bg-white">
                         </td>
                     `;
                     timetableBody.appendChild(row);
                 });
             }
+        }
+
+        function renderMatrix(state) {
+            const matrixBody = document.getElementById('matrix-tbody');
+            matrixBody.innerHTML = '';
+
+            const slots = [
+                { id: '09:15-10:45', label: '09:15 - 10:45' },
+                { id: '11:00-12:30', label: '11:00 - 12:30' },
+                { id: '13:30-15:00', label: '13:30 - 15:00' },
+                { id: '15:15-16:45', label: '15:15 - 16:45' }
+            ];
+
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+
+            // Gather active sessions from enrolled modules in Semester 1 (WiSe 2026)
+            let activeSessions = [];
+            Object.keys(state).forEach(modId => {
+                const item = state[modId];
+                if(item && item.sem === 1) {
+                    const mod = allModules.find(m => m.id === modId);
+                    if(mod) {
+                        // Use customized sessions if present, else fallback
+                        if (item.sessions && Array.isArray(item.sessions)) {
+                            item.sessions.forEach(s => {
+                                activeSessions.push({ ...s, modName: mod.name, cat: mod.cat, ects: mod.ects });
+                            });
+                        } else if (item.day && item.time) {
+                            // Parse basic string entry
+                            days.forEach(d => {
+                                if(item.day.toLowerCase().includes(d.toLowerCase())) {
+                                    slots.forEach(slot => {
+                                        if(item.time.includes(slot.id) || item.time.includes(slot.label)) {
+                                            activeSessions.push({
+                                                day: d,
+                                                time: slot.id,
+                                                type: 'Scheduled Class',
+                                                location: item.location || 'See Schedule',
+                                                modName: mod.name,
+                                                cat: mod.cat,
+                                                ects: mod.ects
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+
+            slots.forEach(slot => {
+                const row = document.createElement('tr');
+                let rowHtml = `<td class="p-2 bg-slate-50/80 font-bold text-slate-500 border border-slate-200/60 align-middle text-[11px]">${slot.label}</td>`;
+
+                days.forEach(day => {
+                    const matches = activeSessions.filter(s => s.day === day && s.time === slot.id);
+                    
+                    rowHtml += `<td class="p-1.5 border border-slate-200/60 align-top h-24 bg-white hover:bg-slate-50/40 transition">`;
+                    
+                    if (matches.length > 0) {
+                        matches.forEach(m => {
+                            let cardTheme = "bg-indigo-50 text-indigo-900 border-indigo-200";
+                            if(m.cat === 'fundamentals') cardTheme = "bg-blue-50 text-blue-900 border-blue-200";
+                            if(m.cat === 'engineering') cardTheme = "bg-emerald-50 text-emerald-900 border-emerald-200";
+                            if(m.cat === 'csm') cardTheme = "bg-purple-50 text-purple-900 border-purple-200";
+                            if(m.cat === 'electives') cardTheme = "bg-amber-50 text-amber-900 border-amber-200";
+
+                            rowHtml += `
+                                <div class="p-1.5 rounded-lg border ${cardTheme} shadow-2xs space-y-0.5 text-[10px] mb-1">
+                                    <div class="font-bold leading-tight">${escapeHtml(m.modName)}</div>
+                                    <div class="text-[9px] opacity-80 font-medium">${escapeHtml(m.type)}</div>
+                                    <div class="text-[9px] text-slate-500 flex items-center gap-1 mt-0.5">
+                                        <span>📍</span> <span class="truncate">${escapeHtml(m.location)}</span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        rowHtml += `<span class="text-[10px] text-slate-300 italic p-1 block">-</span>`;
+                    }
+
+                    rowHtml += `</td>`;
+                });
+
+                row.innerHTML = rowHtml;
+                matrixBody.appendChild(row);
+            });
         }
 
         function allowDrop(e) {
@@ -314,11 +621,17 @@
             if(!modId) return;
 
             const state = loadState();
-            const existing = state[modId];
-            let day = (typeof existing === 'object' && existing.day) ? existing.day : '';
-            let time = (typeof existing === 'object' && existing.time) ? existing.time : '';
+            const existing = state[modId] || {};
+            const defaultItem = defaultScheduleData[modId] || {};
 
-            state[modId] = { sem: semNumber, day: day, time: time };
+            state[modId] = {
+                sem: semNumber,
+                day: existing.day || defaultItem.day || '',
+                time: existing.time || defaultItem.time || '',
+                location: existing.location || defaultItem.location || '',
+                sessions: existing.sessions || defaultItem.sessions || []
+            };
+
             saveState(state);
             render();
         }
@@ -338,22 +651,35 @@
             const state = loadState();
             if(state[modId]) {
                 if(typeof state[modId] !== 'object') {
-                    state[modId] = { sem: state[modId], day: '', time: '' };
+                    state[modId] = { sem: state[modId], day: '', time: '', location: '' };
                 }
                 state[modId][field] = value;
                 saveState(state);
+                renderMatrix(state);
             }
         }
 
         function resetProgress() {
-            if(confirm("Reset all semester placements and schedule details?")) {
-                localStorage.removeItem('shivangi_drag_tracker_v3');
+            if(confirm("Are you sure you want to reset all custom schedule changes back to the default WiSe 2026 timetable?")) {
+                localStorage.removeItem(STORAGE_KEY);
                 render();
             }
         }
 
-        // Initialize render on load
-        render();
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            render();
+        };
     </script>
 </body>
 </html>
