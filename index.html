@@ -18,7 +18,7 @@
         <header class="bg-white shadow-sm rounded-2xl p-6 border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h1 class="text-2xl md:text-3xl font-bold text-slate-900">Shivangi's Digital Engineering Tracker</h1>
-                <p class="text-slate-500 text-sm mt-1">M.Sc. Digital Engineering • Bauhaus-Universität Weimar (120 ECTS Total)</p>
+                <p class="text-slate-500 text-sm mt-1">M.Sc. Digital Engineering • Bauhaus-Universität Weimar (120 ECTS Total)[cite: 3]</p>
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="resetProgress()" class="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition cursor-pointer">Reset All</button>
@@ -37,27 +37,27 @@
                 </div>
             </div>
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                <span class="text-xs font-medium text-slate-500 block">Fundamentals</span>
+                <span class="text-xs font-medium text-slate-500 block">Fundamentals[cite: 4]</span>
                 <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-fund-earned">0</span> / 18</div>
             </div>
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                <span class="text-xs font-medium text-slate-500 block">Engineering M.</span>
+                <span class="text-xs font-medium text-slate-500 block">Engineering M.[cite: 19]</span>
                 <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-eng-earned">0</span> / 36</div>
             </div>
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                <span class="text-xs font-medium text-slate-500 block">CS Methods</span>
+                <span class="text-xs font-medium text-slate-500 block">CS Methods[cite: 55]</span>
                 <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-csm-earned">0</span> / 18</div>
             </div>
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                <span class="text-xs font-medium text-slate-500 block">Electives</span>
+                <span class="text-xs font-medium text-slate-500 block">Electives[cite: 3]</span>
                 <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-elec-earned">0</span> / 12</div>
             </div>
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                <span class="text-xs font-medium text-slate-500 block">Project</span>
+                <span class="text-xs font-medium text-slate-500 block">Project[cite: 75]</span>
                 <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-proj-earned">0</span> / 12</div>
             </div>
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-                <span class="text-xs font-medium text-slate-500 block">Master Module</span>
+                <span class="text-xs font-medium text-slate-500 block">Master Module[cite: 77]</span>
                 <div class="text-lg font-bold text-slate-800 mt-1"><span id="cat-master-earned">0</span> / 24</div>
             </div>
         </div>
@@ -119,12 +119,12 @@
 
         </div>
 
-        <!-- Separate Enrolled Timetable Schedule View -->
+        <!-- Separate Enrolled Timetable Schedule View with Editable Days & Times -->
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
             <div class="flex justify-between items-center mb-4">
                 <div>
-                    <h2 class="font-bold text-slate-900 text-lg">Enrolled Subjects Timetable</h2>
-                    <p class="text-xs text-slate-400">Real-time schedule summary of all modules assigned to your semesters.</p>
+                    <h2 class="font-bold text-slate-900 text-lg">Enrolled Subjects Timetable & Schedule</h2>
+                    <p class="text-xs text-slate-400">Configure your specific class days and timing matching your Moodle schedule below.</p>
                 </div>
                 <span id="enrolled-count" class="text-xs font-semibold px-3 py-1 bg-slate-100 text-slate-600 rounded-lg">0 Modules Enrolled</span>
             </div>
@@ -136,13 +136,14 @@
                             <th class="py-3 px-4">Semester</th>
                             <th class="py-3 px-4">Module Title</th>
                             <th class="py-3 px-4">Category</th>
-                            <th class="py-3 px-4">ECTS</th>
-                            <th class="py-3 px-4">SWS</th>
+                            <th class="py-3 px-4">ECTS / SWS</th>
+                            <th class="py-3 px-4">Day of Week</th>
+                            <th class="py-3 px-4">Time (e.g. 09:00 - 11:30)</th>
                         </tr>
                     </thead>
                     <tbody id="timetable-body" class="divide-y divide-slate-100 text-sm">
                         <tr>
-                            <td colspan="5" class="py-6 text-center text-slate-400 italic">No modules enrolled yet. Drag modules into a semester above to populate your timetable.</td>
+                            <td colspan="6" class="py-6 text-center text-slate-400 italic">No modules enrolled yet. Drag modules into a semester above to populate your timetable.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -199,12 +200,12 @@
         ];
 
         function loadState() {
-            const saved = localStorage.getItem('shivangi_drag_tracker_v2');
+            const saved = localStorage.getItem('shivangi_drag_tracker_v3');
             return saved ? JSON.parse(saved) : {};
         }
 
         function saveState(state) {
-            localStorage.setItem('shivangi_drag_tracker_v2', JSON.stringify(state));
+            localStorage.setItem('shivangi_drag_tracker_v3', JSON.stringify(state));
         }
 
         function render() {
@@ -223,13 +224,19 @@
             let enrolledList = [];
 
             allModules.forEach(mod => {
-                const assignedSem = state[mod.id];
+                const item = state[mod.id];
+                const assignedSem = item ? (typeof item === 'object' ? item.sem : item) : null;
                 
                 if(assignedSem) {
                     totals[mod.cat] += mod.ects;
                     totals.overall += mod.ects;
                     semEcts[assignedSem] += mod.ects;
-                    enrolledList.push({ ...mod, sem: assignedSem });
+                    enrolledList.push({ 
+                        ...mod, 
+                        sem: assignedSem,
+                        day: (typeof item === 'object' && item.day) ? item.day : '',
+                        time: (typeof item === 'object' && item.time) ? item.time : ''
+                    });
                 }
 
                 // Create Draggable Card element
@@ -274,9 +281,8 @@
             // Update Enrolled Timetable Table
             document.getElementById('enrolled-count').innerText = `${enrolledList.length} Modules Enrolled`;
             if(enrolledList.length === 0) {
-                timetableBody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400 italic">No modules enrolled yet. Drag modules into a semester above to populate your timetable.</td></tr>`;
+                timetableBody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-400 italic">No modules enrolled yet. Drag modules into a semester above to populate your timetable.</td></tr>`;
             } else {
-                // Sort by semester
                 enrolledList.sort((a, b) => a.sem - b.sem);
                 enrolledList.forEach(item => {
                     const row = document.createElement('tr');
@@ -285,8 +291,13 @@
                         <td class="py-3 px-4 font-semibold text-indigo-600">Sem ${item.sem}</td>
                         <td class="py-3 px-4 font-medium text-slate-800">${item.name}</td>
                         <td class="py-3 px-4 text-slate-500">${item.catName}</td>
-                        <td class="py-3 px-4 text-slate-600">${item.ects} ECTS</td>
-                        <td class="py-3 px-4 text-slate-600">${item.sws}</td>
+                        <td class="py-3 px-4 text-slate-600">${item.ects} ECTS <span class="text-xs text-slate-400">(${item.sws})</span></td>
+                        <td class="py-3 px-4">
+                            <input type="text" value="${item.day}" placeholder="e.g. Monday" onchange="updateSchedule('${item.id}', 'day', this.value)" class="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500">
+                        </td>
+                        <td class="py-3 px-4">
+                            <input type="text" value="${item.time}" placeholder="e.g. 09:30 - 11:00" onchange="updateSchedule('${item.id}', 'time', this.value)" class="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500">
+                        </td>
                     `;
                     timetableBody.appendChild(row);
                 });
@@ -303,7 +314,11 @@
             if(!modId) return;
 
             const state = loadState();
-            state[modId] = semNumber;
+            const existing = state[modId];
+            let day = (typeof existing === 'object' && existing.day) ? existing.day : '';
+            let time = (typeof existing === 'object' && existing.time) ? existing.time : '';
+
+            state[modId] = { sem: semNumber, day: day, time: time };
             saveState(state);
             render();
         }
@@ -319,9 +334,20 @@
             render();
         }
 
+        function updateSchedule(modId, field, value) {
+            const state = loadState();
+            if(state[modId]) {
+                if(typeof state[modId] !== 'object') {
+                    state[modId] = { sem: state[modId], day: '', time: '' };
+                }
+                state[modId][field] = value;
+                saveState(state);
+            }
+        }
+
         function resetProgress() {
-            if(confirm("Reset all semester placements?")) {
-                localStorage.removeItem('shivangi_drag_tracker_v2');
+            if(confirm("Reset all semester placements and schedule details?")) {
+                localStorage.removeItem('shivangi_drag_tracker_v3');
                 render();
             }
         }
